@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quản lý Thi Trắc Nghiệm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: #343a40;
+        }
+        .sidebar a {
+            color: #fff;
+            padding: 15px 20px;
+            display: block;
+            text-decoration: none;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar p-0">
+                <h4 class="text-white p-3">Admin Panel</h4>
+                <a href="#" onclick="showSection('subjects')" id="nav-subjects" class="active">📚 Quản lý Môn thi</a>
+                <a href="#" onclick="showSection('questions')" id="nav-questions">❓ Quản lý Câu hỏi</a>
+                <a href="#" onclick="showSection('history')" id="nav-history">📊 Lịch sử thi</a>
+                <a href="index.html" onclick="logout()">🚪 Đăng xuất</a>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <!-- Subjects Section -->
+                <div id="subjects-section">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Quản lý Môn thi</h2>
+                        <button class="btn btn-primary" onclick="showAddSubjectModal()">+ Thêm Môn thi</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-hover" id="subjectsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên môn</th>
+                                        <th>Mô tả</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subjectsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions Section -->
+                <div id="questions-section" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Quản lý Câu hỏi</h2>
+                        <div>
+                            <select class="form-select d-inline-block w-auto me-2" id="filterSubject" onchange="loadQuestions()">
+                                <option value="">Tất cả môn</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="showAddQuestionModal()">+ Thêm Câu hỏi</button>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-hover" id="questionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Môn</th>
+                                        <th>Câu hỏi</th>
+                                        <th>Đáp án đúng</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="questionsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div id="history-section" style="display: none;">
+                    <h2 class="mb-4">Lịch sử thi toàn hệ thống</h2>
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-hover" id="historyTable">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Người dùng</th>
+                                        <th>Môn thi</th>
+                                        <th>Điểm</th>
+                                        <th>Số câu đúng</th>
+                                        <th>Ngày thi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subject Modal -->
+    <div class="modal fade" id="subjectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="subjectModalTitle">Thêm Môn thi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="subjectForm">
+                        <input type="hidden" id="subjectId">
+                        <div class="mb-3">
+                            <label class="form-label" for="subjectName">Tên môn thi</label>
+                            <input type="text" class="form-control" id="subjectName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="subjectDescription">Mô tả</label>
+                            <textarea class="form-control" id="subjectDescription" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="saveSubject()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Modal -->
+    <div class="modal fade" id="questionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="questionModalTitle">Thêm Câu hỏi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="questionForm">
+                        <input type="hidden" id="questionId">
+                        <div class="mb-3">
+                            <label class="form-label" for="questionSubject">Môn thi</label>
+                            <select class="form-select" id="questionSubject" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="questionText">Nội dung câu hỏi</label>
+                            <textarea class="form-control" id="questionText" rows="2" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="optionA">Đáp án A</label>
+                                <input type="text" class="form-control" id="optionA" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="optionB">Đáp án B</label>
+                                <input type="text" class="form-control" id="optionB" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="optionC">Đáp án C</label>
+                                <input type="text" class="form-control" id="optionC" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label" for="optionD">Đáp án D</label>
+                                <input type="text" class="form-control" id="optionD" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="correctAnswer">Đáp án đúng</label>
+                            <select class="form-select" id="correctAnswer" required>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="saveQuestion()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        let subjectModal, questionModal;
+
+        // Check authentication
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || user.role !== 'Admin') {
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            subjectModal = new bootstrap.Modal(document.getElementById('subjectModal'));
+            questionModal = new bootstrap.Modal(document.getElementById('questionModal'));
+            loadSubjects();
+            loadSubjectsForSelect();
+        });
+
+        function showSection(section) {
+            document.getElementById('subjects-section').style.display = section === 'subjects' ? 'block' : 'none';
+            document.getElementById('questions-section').style.display = section === 'questions' ? 'block' : 'none';
+            document.getElementById('history-section').style.display = section === 'history' ? 'block' : 'none';
+
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            document.getElementById(`nav-${section}`).classList.add('active');
+
+            if (section === 'subjects') loadSubjects();
+            if (section === 'questions') loadQuestions();
+            if (section === 'history') loadAllHistory();
+        }
+
+        // ===== SUBJECTS =====
+        async function loadSubjects() {
+            try {
+                const response = await adminAPI.getSubjects();
+                const subjects = await response.json();
+
+                const tbody = document.getElementById('subjectsBody');
+                if (subjects.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center">Chưa có môn thi nào</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = subjects.map(s => `
+                    <tr>
+                        <td>${s.SubjectID}</td>
+                        <td>${s.SubjectName}</td>
+                        <td>${s.Description || ''}</td>
+                        <td>${new Date(s.CreatedAt).toLocaleDateString('vi-VN')}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning me-1" onclick="editSubject(${s.SubjectID}, '${s.SubjectName}', '${s.Description || ''}')">Sửa</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteSubject(${s.SubjectID})">Xóa</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Lỗi tải danh sách môn thi');
+            }
+        }
+
+        function showAddSubjectModal() {
+            document.getElementById('subjectId').value = '';
+            document.getElementById('subjectModalTitle').textContent = 'Thêm Môn thi';
+            document.getElementById('subjectName').value = '';
+            document.getElementById('subjectDescription').value = '';
+            subjectModal.show();
+        }
+
+        function editSubject(id, name, description) {
+            document.getElementById('subjectId').value = id;
+            document.getElementById('subjectModalTitle').textContent = 'Sửa Môn thi';
+            document.getElementById('subjectName').value = name;
+            document.getElementById('subjectDescription').value = description;
+            subjectModal.show();
+        }
+
+        async function saveSubject() {
+            const id = document.getElementById('subjectId').value;
+            const data = {
+                subjectName: document.getElementById('subjectName').value,
+                description: document.getElementById('subjectDescription').value
+            };
+
+            try {
+                let response;
+                if (id) {
+                    response = await adminAPI.updateSubject(id, data);
+                } else {
+                    response = await adminAPI.createSubject(data);
+                }
+
+                if (response.ok) {
+                    subjectModal.hide();
+                    loadSubjects();
+                    loadSubjectsForSelect();
+                } else {
+                    const err = await response.json();
+                    alert(err.error || 'Lỗi lưu môn thi');
+                }
+            } catch (error) {
+                alert('Lỗi kết nối server');
+            }
+        }
+
+        async function deleteSubject(id) {
+            if (!confirm('Bạn có chắc muốn xóa môn thi này?')) return;
+
+            try {
+                const response = await adminAPI.deleteSubject(id);
+                if (response.ok) {
+                    loadSubjects();
+                    loadSubjectsForSelect();
+                } else {
+                    const err = await response.json();
+                    alert(err.error || 'Lỗi xóa môn thi');
+                }
+            } catch (error) {
+                alert('Lỗi kết nối server');
+            }
+        }
+
+        async function loadSubjectsForSelect() {
+            try {
+                const response = await adminAPI.getSubjects();
+                const subjects = await response.json();
+
+                const options = subjects.map(s => `<option value="${s.SubjectID}">${s.SubjectName}</option>`).join('');
+                document.getElementById('questionSubject').innerHTML = options;
+                document.getElementById('filterSubject').innerHTML = '<option value="">Tất cả môn</option>' + options;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // ===== QUESTIONS =====
+        async function loadQuestions() {
+            const subjectId = document.getElementById('filterSubject').value;
+            
+            try {
+                const response = await adminAPI.getQuestions(subjectId);
+                const data = await response.json();
+                
+                // Get subjects for display
+                const subjResponse = await adminAPI.getSubjects();
+                const subjects = await subjResponse.json();
+                const subjMap = {};
+                subjects.forEach(s => subjMap[s.SubjectID] = s.SubjectName);
+
+                const tbody = document.getElementById('questionsBody');
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center">Chưa có câu hỏi nào</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(q => `
+                    <tr>
+                        <td>${q.QuestionID}</td>
+                        <td>${subjMap[q.SubjectID] || 'N/A'}</td>
+                        <td>${q.QuestionText.substring(0, 50)}...</td>
+                        <td><span class="badge bg-success">${q.CorrectAnswer}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-warning me-1" onclick="editQuestion(${q.QuestionID})">Sửa</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteQuestion(${q.QuestionID})">Xóa</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Lỗi tải danh sách câu hỏi');
+            }
+        }
+
+        function showAddQuestionModal() {
+            document.getElementById('questionId').value = '';
+            document.getElementById('questionModalTitle').textContent = 'Thêm Câu hỏi';
+            document.getElementById('questionForm').reset();
+            questionModal.show();
+        }
+
+        async function editQuestion(id) {
+            try {
+                const response = await adminAPI.getQuestion(id);
+                const q = await response.json();
+
+                document.getElementById('questionId').value = q.QuestionID;
+                document.getElementById('questionModalTitle').textContent = 'Sửa Câu hỏi';
+                document.getElementById('questionSubject').value = q.SubjectID;
+                document.getElementById('questionText').value = q.QuestionText;
+                document.getElementById('optionA').value = q.OptionA;
+                document.getElementById('optionB').value = q.OptionB;
+                document.getElementById('optionC').value = q.OptionC;
+                document.getElementById('optionD').value = q.OptionD;
+                document.getElementById('correctAnswer').value = q.CorrectAnswer;
+                
+                questionModal.show();
+            } catch (error) {
+                alert('Lỗi tải thông tin câu hỏi');
+            }
+        }
+
+        async function saveQuestion() {
+            const id = document.getElementById('questionId').value;
+            const data = {
+                subjectId: parseInt(document.getElementById('questionSubject').value),
+                questionText: document.getElementById('questionText').value,
+                optionA: document.getElementById('optionA').value,
+                optionB: document.getElementById('optionB').value,
+                optionC: document.getElementById('optionC').value,
+                optionD: document.getElementById('optionD').value,
+                correctAnswer: document.getElementById('correctAnswer').value
+            };
+
+            try {
+                let response;
+                if (id) {
+                    response = await adminAPI.updateQuestion(id, data);
+                } else {
+                    response = await adminAPI.createQuestion(data);
+                }
+
+                if (response.ok) {
+                    questionModal.hide();
+                    loadQuestions();
+                } else {
+                    const err = await response.json();
+                    alert(err.error || 'Lỗi lưu câu hỏi');
+                }
+            } catch (error) {
+                alert('Lỗi kết nối server');
+            }
+        }
+
+        async function deleteQuestion(id) {
+            if (!confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
+
+            try {
+                const response = await adminAPI.deleteQuestion(id);
+                if (response.ok) {
+                    loadQuestions();
+                } else {
+                    const err = await response.json();
+                    alert(err.error || 'Lỗi xóa câu hỏi');
+                }
+            } catch (error) {
+                alert('Lỗi kết nối server');
+            }
+        }
+
+        // ===== HISTORY =====
+        async function loadAllHistory() {
+            try {
+                const response = await adminAPI.getAllExamHistory();
+                const history = await response.json();
+
+                const tbody = document.getElementById('historyBody');
+                if (history.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">Chưa có lịch sử thi nào</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = history.map((item, index) => `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.FullName || item.Username}</td>
+                        <td>${item.SubjectName}</td>
+                        <td><span class="badge ${item.Score >= 5 ? 'bg-success' : 'bg-danger'}">${item.Score}</span></td>
+                        <td>${item.CorrectAnswers}/${item.TotalQuestions}</td>
+                        <td>${new Date(item.ExamDate).toLocaleString('vi-VN')}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Lỗi tải lịch sử thi');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

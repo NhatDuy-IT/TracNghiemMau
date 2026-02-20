@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thi trắc nghiệm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .question-card {
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .option-label {
+            padding: 12px 15px;
+            margin: 8px 0;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-label:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        .option-label input:checked + span {
+            font-weight: bold;
+            color: #667eea;
+        }
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc3545;
+        }
+        .timer.warning {
+            color: #ffc107;
+        }
+        .timer.danger {
+            color: #dc3545;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">Thi Trắc Nghiệm</a>
+            <div class="navbar-nav ms-auto">
+                <span class="nav-link timer" id="timer">15:00</span>
+                <button class="btn btn-outline-light btn-sm ms-3" onclick="submitExam()">Nộp bài</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>Thông tin bài thi</h6>
+                        <p class="mb-1"><strong>Môn:</strong> <span id="subjectName"></span></p>
+                        <p class="mb-0"><strong>Số câu:</strong> <span id="totalQuestions">0</span></p>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h6>Danh sách câu</h6>
+                        <div class="d-flex flex-wrap gap-1" id="questionNav">
+                            <!-- Question numbers will be here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div id="questionsContainer">
+                    <!-- Questions will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div class="modal fade" id="resultModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Kết quả bài thi</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <h2 class="text-primary mb-3">Điểm số: <span id="score">0</span>/10</h2>
+                    <p>Số câu đúng: <span id="correctCount">0</span>/<span id="totalCount">0</span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="window.location.href='home.html'">Quay về trang chủ</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='history.html'">Xem lịch sử</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const subjectId = urlParams.get('subjectId');
+        let questions = [];
+        let answers = [];
+        let timerInterval;
+        let timeLeft = 15 * 60; // 15 minutes in seconds
+
+        // Check authentication
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || user.role === 'Admin') {
+            window.location.href = 'index.html';
+        }
+
+        // Load questions
+        async function loadQuestions() {
+            try {
+                const response = await userAPI.getQuestions(subjectId);
+                questions = await response.json();
+
+                if (questions.length === 0) {
+                    alert('Môn thi này chưa có câu hỏi!');
+                    window.location.href = 'home.html';
+                    return;
+                }
+
+                // Initialize answers array
+                answers = questions.map(q => ({ questionId: q.QuestionID, answer: null }));
+
+                document.getElementById('subjectName').textContent = urlParams.get('subjectName') || 'Môn thi';
+                document.getElementById('totalQuestions').textContent = questions.length;
+
+                renderQuestions();
+                startTimer();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Lỗi tải câu hỏi');
+            }
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            
+            container.innerHTML = questions.map((q, index) => `
+                <div class="question-card" id="question-${q.QuestionID}">
+                    <h5>Câu ${index + 1}:</h5>
+                    <p class="mb-3">${q.QuestionText}</p>
+                    <div class="option-label">
+                        <input type="radio" name="q${q.QuestionID}" value="A" onchange="selectAnswer(${index}, 'A')">
+                        <span class="ms-2">A. ${q.OptionA}</span>
+                    </div>
+                    <div class="option-label">
+                        <input type="radio" name="q${q.QuestionID}" value="B" onchange="selectAnswer(${index}, 'B')">
+                        <span class="ms-2">B. ${q.OptionB}</span>
+                    </div>
+                    <div class="option-label">
+                        <input type="radio" name="q${q.QuestionID}" value="C" onchange="selectAnswer(${index}, 'C')">
+                        <span class="ms-2">C. ${q.OptionC}</span>
+                    </div>
+                    <div class="option-label">
+                        <input type="radio" name="q${q.QuestionID}" value="D" onchange="selectAnswer(${index}, 'D')">
+                        <span class="ms-2">D. ${q.OptionD}</span>
+                    </div>
+                </div>
+            `);
+
+            // Render question navigation
+            const navContainer = document.getElementById('questionNav');
+            navContainer.innerHTML = questions.map((q, index) => `
+                <span class="badge bg-secondary question-num" id="nav-${index}" 
+                      style="cursor:pointer" onclick="scrollToQuestion(${index})">${index + 1}</span>
+            `).join('');
+        }
+
+        function selectAnswer(questionIndex, answer) {
+            answers[questionIndex].answer = answer;
+            
+            // Update navigation
+            const navItem = document.getElementById(`nav-${questionIndex}`);
+            navItem.classList.remove('bg-secondary');
+            navItem.classList.add('bg-success');
+        }
+
+        function scrollToQuestion(index) {
+            const questionId = questions[index].QuestionID;
+            document.getElementById(`question-${questionId}`).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                const timerEl = document.getElementById('timer');
+                timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 60) {
+                    timerEl.classList.add('danger');
+                } else if (timeLeft <= 300) {
+                    timerEl.classList.add('warning');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        async function submitExam() {
+            if (!confirm('Bạn có chắc chắn muốn nộp bài không?')) {
+                return;
+            }
+
+            clearInterval(timerInterval);
+
+            try {
+                const response = await userAPI.submitExam(subjectId, answers);
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Show result
+                    document.getElementById('score').textContent = result.score;
+                    document.getElementById('correctCount').textContent = result.correctAnswers;
+                    document.getElementById('totalCount').textContent = result.totalQuestions;
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('resultModal'));
+                    modal.show();
+                } else {
+                    alert(result.error || 'Lỗi nộp bài');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Lỗi kết nối server');
+            }
+        }
+
+        loadQuestions();
+    </script>
+</body>
+</html>

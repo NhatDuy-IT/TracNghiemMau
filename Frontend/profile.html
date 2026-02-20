@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin cá nhân - Thi Trắc Nghiệm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .profile-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px 15px 0 0;
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 3rem;
+            color: #667eea;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+        .info-value {
+            color: #212529;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Thi Trắc Nghiệm</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="home.html">Trang chủ</a>
+                <a class="nav-link" href="history.html">Lịch sử thi</a>
+                <span class="nav-link" id="userName"></span>
+                <button class="btn btn-outline-light btn-sm" onclick="logout()">Đăng xuất</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 id="displayName">Tên người dùng</h3>
+                        <span class="badge bg-light text-dark" id="userRole">User</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <h5 class="mb-4"><i class="fas fa-user-circle me-2"></i>Thông tin cá nhân</h5>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4 info-label">Tên đăng nhập:</div>
+                            <div class="col-md-8 info-value" id="username"></div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4 info-label">Họ và tên:</div>
+                            <div class="col-md-8 info-value" id="fullName"></div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4 info-label">Email:</div>
+                            <div class="col-md-8 info-value" id="email"></div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4 info-label">Vai trò:</div>
+                            <div class="col-md-8 info-value" id="role"></div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4 info-label">Ngày tham gia:</div>
+                            <div class="col-md-8 info-value" id="createdAt"></div>
+                        </div>
+
+                        <hr>
+                        
+                        <h5 class="mb-4"><i class="fas fa-chart-line me-2"></i>Thống kê</h5>
+                        
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="stat-box">
+                                    <h3 class="text-primary" id="totalExams">0</h3>
+                                    <p class="text-muted">Bài thi đã làm</p>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="text-success" id="avgScore">0</h3>
+                                <p class="text-muted">Điểm trung bình</p>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="text-info" id="bestScore">0</h3>
+                                <p class="text-muted">Điểm cao nhất</p>
+                            </div>
+                        </div>
+
+                        <hr>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" onclick="editProfile()">
+                                <i class="fas fa-edit me-2"></i>Chỉnh sửa thông tin
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="changePassword()">
+                                <i class="fas fa-key me-2"></i>Đổi mật khẩu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa thông tin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="editFullName">Họ và tên</label>
+                        <input type="text" class="form-control" id="editFullName" placeholder="Nhập họ và tên">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="editEmail">Email</label>
+                        <input type="email" class="form-control" id="editEmail" placeholder="Nhập email">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="saveProfile()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="passwordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đổi mật khẩu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="currentPassword">Mật khẩu hiện tại</label>
+                        <input type="password" class="form-control" id="currentPassword" placeholder="Nhập mật khẩu hiện tại">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="newPassword">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="newPassword" placeholder="Nhập mật khẩu mới">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="confirmPassword">Nhập lại mật khẩu mới</label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu mới">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="savePassword()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        let user = JSON.parse(localStorage.getItem('user'));
+        
+        // Check authentication
+        if (!user) {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('userName').textContent = user.fullName || user.username;
+        document.getElementById('displayName').textContent = user.fullName || user.username;
+        document.getElementById('userRole').textContent = user.role === 'Admin' ? 'Quản trị viên' : 'Người dùng';
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('fullName').textContent = user.fullName || 'Chưa cập nhật';
+        document.getElementById('email').textContent = user.email || 'Chưa cập nhật';
+        document.getElementById('role').textContent = user.role === 'Admin' ? 'Quản trị viên' : 'Người dùng';
+        document.getElementById('createdAt').textContent = user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : 'Chưa xác định';
+
+        // Load user statistics
+        async function loadStats() {
+            try {
+                const response = await userAPI.getExamHistory();
+                if (response.ok) {
+                    const history = await response.json();
+                    
+                    const totalExams = history.length;
+                    const avgScore = totalExams > 0 
+                        ? (history.reduce((sum, h) => sum + h.Score, 0) / totalExams).toFixed(1)
+                        : 0;
+                    const bestScore = totalExams > 0 
+                        ? Math.max(...history.map(h => h.Score))
+                        : 0;
+                    
+                    document.getElementById('totalExams').textContent = totalExams;
+                    document.getElementById('avgScore').textContent = avgScore;
+                    document.getElementById('bestScore').textContent = bestScore;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function editProfile() {
+            document.getElementById('editFullName').value = user.fullName || '';
+            document.getElementById('editEmail').value = user.email || '';
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        }
+
+        async function saveProfile() {
+            const fullName = document.getElementById('editFullName').value;
+            const email = document.getElementById('editEmail').value;
+            
+            try {
+                const response = await fetch(`${BASE_URL}/user/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ fullName, email })
+                });
+                
+                if (response.ok) {
+                    user.fullName = fullName;
+                    user.email = email;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    location.reload();
+                } else {
+                    alert('Cập nhật thất bại');
+                }
+            } catch (error) {
+                alert('Lỗi kết nối');
+            }
+        }
+
+        function changePassword() {
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            new bootstrap.Modal(document.getElementById('passwordModal')).show();
+        }
+
+        async function savePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('Mật khẩu mới không khớp');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('Mật khẩu mới phải có ít nhất 6 ký tự');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${BASE_URL}/user/change-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Đổi mật khẩu thành công');
+                    bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
+                } else {
+                    alert(data.error || 'Đổi mật khẩu thất bại');
+                }
+            } catch (error) {
+                alert('Lỗi kết nối');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

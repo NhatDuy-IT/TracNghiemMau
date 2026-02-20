@@ -1,0 +1,19 @@
+{
+  "name": "trac-nghiem-node",
+  "version": "1.0.0",
+  "description": "Backend API for Trắc Nghiệm Website",
+  "main": "Backend/index.js",
+  "scripts": {
+    "start": "node Backend/index.js",
+    "test:db": "node Backend/test-db.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "msnodesqlv8": "^5.1.5",
+    "mssql": "^12.2.0"
+  }
+}
