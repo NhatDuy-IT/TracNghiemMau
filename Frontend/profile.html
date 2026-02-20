@@ -1,227 +1,209 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html class="light" lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông tin cá nhân - Thi Trắc Nghiệm</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ExamMaster - Hồ sơ cá nhân</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
     <style>
-        body {
-            background: #f8f9fa;
-        }
-        .profile-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        .profile-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px 15px 0 0;
-            padding: 30px;
-            text-align: center;
-            color: white;
-        }
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid white;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 3rem;
-            color: #667eea;
-        }
-        .info-label {
-            font-weight: 600;
-            color: #6c757d;
-        }
-        .info-value {
-            color: #212529;
-        }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="#">Thi Trắc Nghiệm</a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="home.html">Trang chủ</a>
-                <a class="nav-link" href="history.html">Lịch sử thi</a>
-                <span class="nav-link" id="userName"></span>
-                <button class="btn btn-outline-light btn-sm" onclick="logout()">Đăng xuất</button>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card profile-card">
-                    <div class="profile-header">
-                        <div class="profile-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <h3 id="displayName">Tên người dùng</h3>
-                        <span class="badge bg-light text-dark" id="userRole">User</span>
-                    </div>
-                    <div class="card-body p-4">
-                        <h5 class="mb-4"><i class="fas fa-user-circle me-2"></i>Thông tin cá nhân</h5>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-4 info-label">Tên đăng nhập:</div>
-                            <div class="col-md-8 info-value" id="username"></div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-4 info-label">Họ và tên:</div>
-                            <div class="col-md-8 info-value" id="fullName"></div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-4 info-label">Email:</div>
-                            <div class="col-md-8 info-value" id="email"></div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-4 info-label">Vai trò:</div>
-                            <div class="col-md-8 info-value" id="role"></div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-4 info-label">Ngày tham gia:</div>
-                            <div class="col-md-8 info-value" id="createdAt"></div>
-                        </div>
-
-                        <hr>
-                        
-                        <h5 class="mb-4"><i class="fas fa-chart-line me-2"></i>Thống kê</h5>
-                        
-                        <div class="row text-center">
-                            <div class="col-4">
-                                <div class="stat-box">
-                                    <h3 class="text-primary" id="totalExams">0</h3>
-                                    <p class="text-muted">Bài thi đã làm</p>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <h3 class="text-success" id="avgScore">0</h3>
-                                <p class="text-muted">Điểm trung bình</p>
-                            </div>
-                            <div class="col-4">
-                                <h3 class="text-info" id="bestScore">0</h3>
-                                <p class="text-muted">Điểm cao nhất</p>
-                            </div>
-                        </div>
-
-                        <hr>
-                        
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary" onclick="editProfile()">
-                                <i class="fas fa-edit me-2"></i>Chỉnh sửa thông tin
-                            </button>
-                            <button class="btn btn-outline-danger" onclick="changePassword()">
-                                <i class="fas fa-key me-2"></i>Đổi mật khẩu
-                            </button>
-                        </div>
-                    </div>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-8">
+                    <a class="flex items-center gap-2 text-primary" href="home.html">
+                        <span class="material-symbols-outlined text-3xl font-bold">analytics</span>
+                        <span class="text-slate-900 dark:text-white text-xl font-extrabold tracking-tight">ExamMaster</span>
+                    </a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a class="text-sm font-medium text-slate-600 hover:text-primary dark:text-slate-300" href="home.html">Danh sách thi</a>
+                        <a class="text-sm font-medium text-slate-600 hover:text-primary dark:text-slate-300" href="history.html">Lịch sử</a>
+                        <a class="text-sm font-medium text-primary" href="profile.html">Hồ sơ</a>
+                    </nav>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm font-medium text-slate-600 dark:text-slate-300" id="userName"></span>
+                    <button class="text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-primary px-4 py-2 transition-colors" onclick="logout()">Đăng xuất</button>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Profile Header -->
+        <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 mb-8">
+            <div class="h-32 bg-gradient-to-r from-primary to-blue-400"></div>
+            <div class="px-8 pb-8">
+                <div class="relative -mt-16 mb-6">
+                    <div class="w-24 h-24 bg-white dark:bg-slate-800 rounded-full p-1">
+                        <div class="w-full h-full bg-primary rounded-full flex items-center justify-center">
+                            <span class="material-symbols-outlined text-4xl text-white" id="avatarIcon">person</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white" id="displayName">Tên người dùng</h1>
+                        <p class="text-slate-500" id="username">@username</p>
+                    </div>
+                    <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium" id="userRole">User</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-3 gap-6 mb-8">
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center">
+                <span class="material-symbols-outlined text-3xl text-primary mb-2">assignment</span>
+                <p class="text-3xl font-black text-slate-900 dark:text-white" id="totalExams">0</p>
+                <p class="text-sm text-slate-500">Bài thi đã làm</p>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center">
+                <span class="material-symbols-outlined text-3xl text-green-500 mb-2">trending_up</span>
+                <p class="text-3xl font-black text-slate-900 dark:text-white" id="avgScore">0</p>
+                <p class="text-sm text-slate-500">Điểm TB</p>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 text-center">
+                <span class="material-symbols-outlined text-3xl text-yellow-500 mb-2">emoji_events</span>
+                <p class="text-3xl font-black text-slate-900 dark:text-white" id="bestScore">0</p>
+                <p class="text-sm text-slate-500">Điểm cao nhất</p>
+            </div>
+        </div>
+
+        <!-- Profile Info -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Thông tin cá nhân</h2>
+                <button class="text-primary font-medium hover:underline" onclick="editProfile()">Chỉnh sửa</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm text-slate-500 mb-1">Họ và tên</label>
+                    <p class="font-medium text-slate-900 dark:text-white" id="fullName">Chưa cập nhật</p>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-500 mb-1">Email</label>
+                    <p class="font-medium text-slate-900 dark:text-white" id="email">Chưa cập nhật</p>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-500 mb-1">Ngày tham gia</label>
+                    <p class="font-medium text-slate-900 dark:text-white" id="createdAt">-</p>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-500 mb-1">Vai trò</label>
+                    <p class="font-medium text-slate-900 dark:text-white" id="role">User</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Cài đặt</h2>
+            <button class="w-full flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors" onclick="changePassword()">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-slate-500">lock</span>
+                    <span class="font-medium text-slate-900 dark:text-white">Đổi mật khẩu</span>
+                </div>
+                <span class="material-symbols-outlined text-slate-400">chevron_right</span>
+            </button>
+        </div>
+    </main>
 
     <!-- Edit Profile Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chỉnh sửa thông tin</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+    <div id="editModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md mx-4">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Chỉnh sửa thông tin</h3>
+            <form onsubmit="saveProfile(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Họ và tên</label>
+                    <input type="text" id="editFullName" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700" required/>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label" for="editFullName">Họ và tên</label>
-                        <input type="text" class="form-control" id="editFullName" placeholder="Nhập họ và tên">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="editEmail">Email</label>
-                        <input type="email" class="form-control" id="editEmail" placeholder="Nhập email">
-                    </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email</label>
+                    <input type="email" id="editEmail" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700"/>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" onclick="saveProfile()">Lưu</button>
+                <div class="flex gap-3 justify-end">
+                    <button type="button" class="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg" onclick="closeEditModal()">Hủy</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg">Lưu</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
     <!-- Change Password Modal -->
-    <div class="modal fade" id="passwordModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Đổi mật khẩu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+    <div id="passwordModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-md mx-4">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Đổi mật khẩu</h3>
+            <form onsubmit="savePassword(event)">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Mật khẩu hiện tại</label>
+                    <input type="password" id="currentPassword" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700" required/>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label" for="currentPassword">Mật khẩu hiện tại</label>
-                        <input type="password" class="form-control" id="currentPassword" placeholder="Nhập mật khẩu hiện tại">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="newPassword">Mật khẩu mới</label>
-                        <input type="password" class="form-control" id="newPassword" placeholder="Nhập mật khẩu mới">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="confirmPassword">Nhập lại mật khẩu mới</label>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Nhập lại mật khẩu mới">
-                    </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Mật khẩu mới</label>
+                    <input type="password" id="newPassword" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700" required/>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" onclick="savePassword()">Lưu</button>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Nhập lại mật khẩu mới</label>
+                    <input type="password" id="confirmPassword" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700" required/>
                 </div>
-            </div>
+                <div class="flex gap-3 justify-end">
+                    <button type="button" class="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg" onclick="closePasswordModal()">Hủy</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg">Lưu</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/api.js"></script>
     <script>
         let user = JSON.parse(localStorage.getItem('user'));
         
-        // Check authentication
         if (!user) {
             window.location.href = 'index.html';
         }
 
         document.getElementById('userName').textContent = user.fullName || user.username;
         document.getElementById('displayName').textContent = user.fullName || user.username;
+        document.getElementById('username').textContent = '@' + user.username;
         document.getElementById('userRole').textContent = user.role === 'Admin' ? 'Quản trị viên' : 'Người dùng';
-        document.getElementById('username').textContent = user.username;
         document.getElementById('fullName').textContent = user.fullName || 'Chưa cập nhật';
         document.getElementById('email').textContent = user.email || 'Chưa cập nhật';
         document.getElementById('role').textContent = user.role === 'Admin' ? 'Quản trị viên' : 'Người dùng';
-        document.getElementById('createdAt').textContent = user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : 'Chưa xác định';
+        document.getElementById('createdAt').textContent = user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : '-';
 
-        // Load user statistics
+        // Load statistics
         async function loadStats() {
             try {
                 const response = await userAPI.getExamHistory();
                 if (response.ok) {
                     const history = await response.json();
-                    
                     const totalExams = history.length;
-                    const avgScore = totalExams > 0 
-                        ? (history.reduce((sum, h) => sum + h.Score, 0) / totalExams).toFixed(1)
-                        : 0;
-                    const bestScore = totalExams > 0 
-                        ? Math.max(...history.map(h => h.Score))
-                        : 0;
+                    const avgScore = totalExams > 0 ? (history.reduce((sum, h) => sum + h.Score, 0) / totalExams).toFixed(1) : 0;
+                    const bestScore = totalExams > 0 ? Math.max(...history.map(h => h.Score)) : 0;
                     
                     document.getElementById('totalExams').textContent = totalExams;
                     document.getElementById('avgScore').textContent = avgScore;
@@ -235,23 +217,22 @@
         function editProfile() {
             document.getElementById('editFullName').value = user.fullName || '';
             document.getElementById('editEmail').value = user.email || '';
-            new bootstrap.Modal(document.getElementById('editModal')).show();
+            document.getElementById('editModal').classList.remove('hidden');
+            document.getElementById('editModal').classList.add('flex');
         }
 
-        async function saveProfile() {
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            document.getElementById('editModal').classList.remove('flex');
+        }
+
+        async function saveProfile(e) {
+            e.preventDefault();
             const fullName = document.getElementById('editFullName').value;
             const email = document.getElementById('editEmail').value;
             
             try {
-                const response = await fetch(`${BASE_URL}/user/profile`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify({ fullName, email })
-                });
-                
+                const response = await userAPI.updateProfile({ fullName, email });
                 if (response.ok) {
                     user.fullName = fullName;
                     user.email = email;
@@ -269,10 +250,17 @@
             document.getElementById('currentPassword').value = '';
             document.getElementById('newPassword').value = '';
             document.getElementById('confirmPassword').value = '';
-            new bootstrap.Modal(document.getElementById('passwordModal')).show();
+            document.getElementById('passwordModal').classList.remove('hidden');
+            document.getElementById('passwordModal').classList.add('flex');
         }
 
-        async function savePassword() {
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.add('hidden');
+            document.getElementById('passwordModal').classList.remove('flex');
+        }
+
+        async function savePassword(e) {
+            e.preventDefault();
             const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
@@ -288,19 +276,11 @@
             }
             
             try {
-                const response = await fetch(`${BASE_URL}/user/change-password`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify({ currentPassword, newPassword })
-                });
-                
+                const response = await userAPI.changePassword({ currentPassword, newPassword });
                 const data = await response.json();
                 if (response.ok) {
                     alert('Đổi mật khẩu thành công');
-                    bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
+                    closePasswordModal();
                 } else {
                     alert(data.error || 'Đổi mật khẩu thất bại');
                 }

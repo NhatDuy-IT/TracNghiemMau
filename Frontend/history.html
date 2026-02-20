@@ -1,93 +1,174 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html class="light" lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch sử thi - Thi Trắc Nghiệm</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .score-badge {
-            font-size: 1.2rem;
-            padding: 10px 20px;
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ExamMaster - Lịch sử thi</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
         }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="home.html">Thi Trắc Nghiệm</a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="home.html">Trang chủ</a>
-                <span class="nav-link" id="userName"></span>
-                <button class="btn btn-outline-light btn-sm" onclick="logout()">Đăng xuất</button>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-8">
+                    <a class="flex items-center gap-2 text-primary" href="home.html">
+                        <span class="material-symbols-outlined text-3xl font-bold">analytics</span>
+                        <span class="text-slate-900 dark:text-white text-xl font-extrabold tracking-tight">ExamMaster</span>
+                    </a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a class="text-sm font-medium text-slate-600 hover:text-primary dark:text-slate-300" href="home.html">Danh sách thi</a>
+                        <a class="text-sm font-medium text-primary" href="history.html">Lịch sử</a>
+                        <a class="text-sm font-medium text-slate-600 hover:text-primary dark:text-slate-300" href="profile.html">Hồ sơ</a>
+                    </nav>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm font-medium text-slate-600 dark:text-slate-300" id="userName"></span>
+                    <button class="text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-primary px-4 py-2 transition-colors" onclick="logout()">Đăng xuất</button>
+                </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <div class="container mt-4">
-        <h2 class="mb-4">Lịch sử các lần thi</h2>
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-hover" id="historyTable">
-                    <thead>
-                        <tr>
-                            <th>STT</th>
-                            <th>Môn thi</th>
-                            <th>Điểm</th>
-                            <th>Số câu đúng</th>
-                            <th>Tổng số câu</th>
-                            <th>Ngày thi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyBody">
-                        <!-- History will be loaded here -->
-                    </tbody>
-                </table>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-black text-slate-900 dark:text-white mb-2">Lịch sử thi</h1>
+            <p class="text-slate-500 dark:text-slate-400">Xem lại kết quả các bài thi đã làm</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-2xl">assignment</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500">Tổng bài thi</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white" id="totalExams">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-green-600 text-2xl">trending_up</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500">Điểm trung bình</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white" id="avgScore">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-yellow-500/10 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-yellow-600 text-2xl">emoji_events</span>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500">Điểm cao nhất</p>
+                        <p class="text-2xl font-bold text-slate-900 dark:text-white" id="bestScore">0</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+
+        <!-- History Table -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-slate-50 dark:bg-slate-700/50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">STT</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Môn thi</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Điểm số</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Số câu đúng</th>
+                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Ngày thi</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody" class="divide-y divide-slate-200 dark:divide-slate-700">
+                    <tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Đang tải...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-950 pt-8 pb-6 border-t border-slate-100 dark:border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-slate-500 text-sm">© 2024 ExamMaster. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="js/api.js"></script>
     <script>
-        // Check authentication
         const user = JSON.parse(localStorage.getItem('user'));
-        if (!user || user.role === 'Admin') {
+        if (!user) {
             window.location.href = 'index.html';
         }
-
         document.getElementById('userName').textContent = user.fullName || user.username;
 
-        // Load exam history
         async function loadHistory() {
             try {
                 const response = await userAPI.getExamHistory();
                 const history = await response.json();
-
-                const tbody = document.getElementById('historyBody');
-
+                
+                const tbody = document.getElementById('historyTableBody');
+                
                 if (history.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Bạn chưa thi lần nào!</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-slate-500">Bạn chưa làm bài thi nào</td></tr>';
                     return;
                 }
 
-                tbody.innerHTML = history.map((item, index) => {
-                    const date = new Date(item.ExamDate).toLocaleString('vi-VN');
-                    const scoreClass = item.Score >= 5 ? 'bg-success' : 'bg-danger';
-                    
+                // Calculate stats
+                const totalExams = history.length;
+                const avgScore = (history.reduce((sum, h) => sum + h.Score, 0) / totalExams).toFixed(1);
+                const bestScore = Math.max(...history.map(h => h.Score));
+                
+                document.getElementById('totalExams').textContent = totalExams;
+                document.getElementById('avgScore').textContent = avgScore;
+                document.getElementById('bestScore').textContent = bestScore;
+
+                tbody.innerHTML = history.map((h, index) => {
+                    const scoreClass = h.Score >= 8 ? 'text-green-600' : h.Score >= 5 ? 'text-yellow-600' : 'text-red-500';
                     return `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${item.SubjectName}</td>
-                    <td><span class="badge ${scoreClass} score-badge">${item.Score}</span></td>
-                            <td>${item.CorrectAnswers}</td>
-                            <td>${item.TotalQuestions}</td>
-                            <td>${date}</td>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                            <td class="px-6 py-4 text-slate-500">${index + 1}</td>
+                            <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">${h.SubjectName}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold ${scoreClass} bg-slate-100 dark:bg-slate-700">
+                                    ${h.Score}/10
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-slate-600 dark:text-slate-300">${h.CorrectAnswers}/${h.TotalQuestions}</td>
+                            <td class="px-6 py-4 text-slate-500">${new Date(h.ExamDate).toLocaleString('vi-VN')}</td>
                         </tr>
                     `;
                 }).join('');
             } catch (error) {
                 console.error('Error:', error);
-                alert('Lỗi tải lịch sử thi');
+                document.getElementById('historyTableBody').innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Lỗi tải dữ liệu</td></tr>';
             }
         }
 

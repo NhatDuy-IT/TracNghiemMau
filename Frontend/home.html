@@ -1,46 +1,191 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html class="light" lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang chủ - Thi Trắc Nghiệm</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ExamMaster - Trang chủ</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
     <style>
-        .subject-card {
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: none;
-            border-radius: 15px;
-        }
-        .subject-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-        .subject-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .subject-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
     </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="#">Thi Trắc Nghiệm</a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="history.html">Lịch sử thi</a>
-                <a class="nav-link" href="profile.html">Hồ sơ</a>
-                <span class="nav-link" id="userName"></span>
-                <button class="btn btn-outline-light btn-sm" onclick="logout()">Đăng xuất</button>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+    <!-- Navigation -->
+    <header class="sticky top-0 z-50 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-8">
+                    <a class="flex items-center gap-2 text-primary" href="home.html">
+                        <span class="material-symbols-outlined text-3xl font-bold">analytics</span>
+                        <span class="text-slate-900 dark:text-white text-xl font-extrabold tracking-tight">ExamMaster</span>
+                    </a>
+                    <nav class="hidden md:flex items-center gap-6">
+                        <a class="text-sm font-medium text-primary" href="home.html">Danh sách thi</a>
+                        <a class="text-sm font-medium text-slate-600 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="history.html">Lịch sử</a>
+                        <a class="text-sm font-medium text-slate-600 hover:text-primary dark:text-slate-300 dark:hover:text-primary transition-colors" href="profile.html">Hồ sơ</a>
+                    </nav>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="hidden lg:flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-1.5 border border-transparent focus-within:border-primary/50 transition-all">
+                        <span class="material-symbols-outlined text-slate-400 text-xl">search</span>
+                        <input class="bg-transparent border-none focus:ring-0 text-sm w-48 placeholder:text-slate-400" placeholder="Tìm kiếm môn thi..." type="text"/>
+                    </div>
+                    <span class="text-sm font-medium text-slate-600 dark:text-slate-300" id="userName"></span>
+                    <button class="text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-primary px-4 py-2 transition-colors" onclick="logout()">Đăng xuất</button>
+                </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <div class="container mt-4">
-        <h2 class="mb-4">Danh sách môn thi</h2>
-        <div class="row" id="subjectList">
-            <!-- Subjects will be loaded here -->
+    <main>
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden pt-16 pb-12 lg:pt-24 lg:pb-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="z-10">
+                        <h1 class="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-6">
+                            Sẵn sàng cho <span class="text-primary">kỳ thi</span> của bạn
+                        </h1>
+                        <p class="text-lg lg:text-xl text-slate-600 dark:text-slate-400 leading-relaxed mb-10 max-w-xl">
+                            Chọn môn thi bên dưới để bắt đầu làm bài. Hệ thống sẽ tự động chấm điểm và lưu kết quả.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button class="bg-primary hover:bg-primary/90 text-white font-bold px-8 py-4 rounded-xl text-lg transition-all flex items-center justify-center gap-2 shadow-xl shadow-primary/30">
+                                Bắt đầu thi ngay
+                                <span class="material-symbols-outlined">arrow_forward</span>
+                            </button>
+                        </div>
+                        <div class="mt-8 flex items-center gap-6">
+                            <div class="flex -space-x-3">
+                                <img class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-900 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTNsSvmvOydFSCRBd9kaJm4iNgD5rLifY2chXouqyzjDstpJSHcjQxeiVcrPnDLQ1-1Mg4ELSvVMKAWgeijtGZnxuYVIKdLwU81JhJSfnYNr7-jHULLmwJEPXCI2nDo8F_OyhpER6SJ7GTHrd2AdXKMNeIvew0EbvdKUQBKWp04GuiZXxds8jfVxGymKSDF3_Z8dGBra3tbI-X68Pd5P6GnHYAJOKOpeexj7oISsZL6AWDWaz5djxyvShqcWEjPEfNezFV3s_kU9A" alt="Học sinh 1"/>
+                                <img class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-900 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCC8e4lhzvflMtWPBEfuCYEo0HTiGOkMGXNKosK4p7AjpyYyckOkNSn9e_nSzoyhRi_jjAbQY3x5ZvsY5FPJv_Ykda3Tj1X5Sy2ethwYS7FRx3BjcUDDp7zof2zquYZsP_96CX9vWf7QVyMS95PxKwKPYhM3F6Oeg2ajylD_blq2QreI3L5-9lq10OYtjZbDTpGu_mM-Znr9e_Ve427OFxnKkoySbQG55AeKSGt8bu_MYLjB3_q74FkBpVVvD2qIqFF3QVedV8kQP0" alt="Học sinh 2"/>
+                                <div class="w-10 h-10 rounded-full border-2 border-white dark:border-slate-900 bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold">+10k</div>
+                            </div>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">Tham gia cùng <span class="text-slate-900 dark:text-white font-bold">12,000+ học sinh</span></p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -top-20 -right-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+                        <div class="relative bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-700">
+                            <img class="w-full h-auto object-cover aspect-[4/3]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCn9vDC56iLm8CFtUiwhAkmuE4-4KQ5X54YMya0Y3_mW-5E0TV3NFowC8Gcod7Wvq6RCQrJ_w6VwmZFKt8BsGYMIjUn-AON8rflDs6ZyJHU39XLFlqlWo15q3BTAqCFruLQ1S50QtXQqU4nvb73dUa7ZS_HTM1c9kiYF9Xhnk32uUWzGh7JhfyoPWQnmRxOEs5umk6KfFybCyYq-sWWTjQEjAohh3u7V6kZ4YnUmv2qjBXyN9-wFD-Hb1rvk3E5xvg3eurBPS1EfOs" alt="Giao diện thi trực tuyến"/>
+                            <div class="absolute bottom-6 left-6 right-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-white/20 shadow-lg flex items-center gap-4">
+                                <div class="bg-green-500/20 p-2 rounded-lg">
+                                    <span class="material-symbols-outlined text-green-600">check_circle</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Điểm mới nhất</p>
+                                    <p class="text-lg font-black text-slate-900 dark:text-white">Đạt kết quả cao</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="bg-white dark:bg-slate-900 py-12 border-y border-slate-100 dark:border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <p class="text-4xl font-black text-primary mb-1">1M+</p>
+                        <p class="text-sm font-medium text-slate-500 uppercase tracking-widest">Bài thi đã làm</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-4xl font-black text-primary mb-1">95%</p>
+                        <p class="text-sm font-medium text-slate-500 uppercase tracking-widest">Tỷ lệ đạt</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-4xl font-black text-primary mb-1" id="subjectCount">0</p>
+                        <p class="text-sm font-medium text-slate-500 uppercase tracking-widest">Môn thi</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-4xl font-black text-primary mb-1">24/7</p>
+                        <p class="text-sm font-medium text-slate-500 uppercase tracking-widest">Hỗ trợ</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subjects Section -->
+        <section class="py-16 bg-background-light dark:bg-background-dark">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <h2 class="text-primary font-bold uppercase tracking-widest text-sm mb-4">Danh sách môn thi</h2>
+                    <h3 class="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-4">Chọn môn thi của bạn</h3>
+                    <p class="text-lg text-slate-600 dark:text-slate-400">Chọn môn thi để bắt đầu làm bài trắc nghiệm.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="subjectList">
+                    <!-- Subjects will be loaded here -->
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-slate-500">Đang tải danh sách môn thi...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-16 bg-white dark:bg-slate-900">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-slate-50 dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all group">
+                        <div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-3xl">timer</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Thi có thời gian</h4>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Mô phỏng môi trường thi thực tế để cải thiện tốc độ và độ chính xác.</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all group">
+                        <div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-3xl">bolt</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Kết quả ngay lập tức</h4>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Nhận điểm số và phân tích chi tiết ngay sau khi nộp bài.</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all group">
+                        <div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-3xl">bar_chart_4_bars</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Thống kê chi tiết</h4>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Theo dõi tiến độ học tập với các biểu đồ trực quan.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-slate-950 pt-12 pb-8 border-t border-slate-100 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-2xl font-bold">analytics</span>
+                    <span class="text-slate-900 dark:text-white text-lg font-bold">ExamMaster</span>
+                </div>
+                <p class="text-slate-500 text-sm">© 2024 ExamMaster. All rights reserved.</p>
+            </div>
         </div>
-    </div>
+    </footer>
 
     <script src="js/api.js"></script>
     <script>
@@ -52,6 +197,21 @@
 
         document.getElementById('userName').textContent = user.fullName || user.username;
 
+        // Subject icons
+        const icons = ['📚', '🔬', '💻', '🌐', '📊', '🧮', '🔤', '🧠', '🎨', '⚙️', '📐', '🌍'];
+        
+        // Subject images (placeholder gradient backgrounds)
+        const gradients = [
+            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+            'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+            'linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)',
+            'linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)'
+        ];
+
         // Load subjects
         async function loadSubjects() {
             try {
@@ -59,28 +219,30 @@
                 const subjects = await response.json();
                 
                 const container = document.getElementById('subjectList');
+                document.getElementById('subjectCount').textContent = subjects.length;
                 
                 if (subjects.length === 0) {
-                    container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">Chưa có môn thi nào!</p></div>';
+                    container.innerHTML = '<div class="col-span-full text-center py-12"><p class="text-slate-500">Chưa có môn thi nào!</p></div>';
                     return;
                 }
 
-                const icons = ['📚', '🔬', '💻', '🌐', '📊', '🧮', '🔤', '🧠'];
-                
                 container.innerHTML = subjects.map((subject, index) => `
-                    <div class="col-md-4 mb-4">
-                        <div class="card subject-card p-4 bg-light" onclick="startExam(${subject.SubjectID}, '${subject.SubjectName}')">
-                            <div class="text-center">
-                                <div class="subject-icon">${icons[index % icons.length]}</div>
-                                <h5>${subject.SubjectName}</h5>
-                                <p class="text-muted small">${subject.Description || 'Bấm để bắt đầu thi'}</p>
+                    <div class="group relative bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl transition-all" onclick="startExam(${subject.SubjectID}, '${subject.SubjectName}')">
+                        <div class="aspect-[4/3] relative overflow-hidden" style="background: ${gradients[index % gradients.length]}">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-6xl">${icons[index % icons.length]}</span>
                             </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+                        </div>
+                        <div class="p-5">
+                            <h5 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">${subject.SubjectName}</h5>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-2">${subject.Description || 'Bấm để bắt đầu thi'}</p>
                         </div>
                     </div>
                 `);
             } catch (error) {
                 console.error('Error:', error);
-                alert('Lỗi tải danh sách môn thi');
+                document.getElementById('subjectList').innerHTML = '<div class="col-span-full text-center py-12"><p class="text-red-500">Lỗi tải danh sách môn thi</p></div>';
             }
         }
 
