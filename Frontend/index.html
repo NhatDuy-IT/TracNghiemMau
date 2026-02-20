@@ -1,142 +1,236 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html class="light" lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập - Thi Trắc Nghiệm</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ExamMaster - Đăng nhập & Đăng ký</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                },
+            },
+        }
+    </script>
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            padding: 12px;
-            font-weight: 600;
-        }
-        .toggle-link {
-            cursor: pointer;
-            color: #667eea;
-        }
-        .toggle-link:hover {
-            text-decoration: underline;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .auth-split-bg { background: linear-gradient(135deg, #137fec 0%, #0a4fa1 100%); }
+        .hidden { display: none; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card p-4">
-                    <div class="text-center mb-4">
-                        <h3 id="formTitle">Đăng nhập</h3>
-                    </div>
-                    
-                    <!-- Login Form -->
-                    <form id="loginForm">
-                        <div class="mb-3">
-                            <label class="form-label">Tên đăng nhập</label>
-                            <input type="text" class="form-control" id="loginUsername" placeholder="Nhập tên đăng nhập" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Mật khẩu</label>
-                            <input type="password" class="form-control" id="loginPassword" placeholder="Nhập mật khẩu" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
-                    </form>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased min-h-screen">
+    <div class="flex min-h-screen w-full overflow-hidden">
+        <!-- Left Side: Illustration & Branding -->
+        <div class="hidden lg:flex lg:w-1/2 auth-split-bg relative flex-col justify-between p-12 text-white">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
+                    <svg class="size-8 text-white" fill="none" viewbox="0 0 48 48">
+                        <path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold tracking-tight">ExamMaster</h2>
+            </div>
+            <div class="z-10">
+                <div class="mb-8 overflow-hidden rounded-2xl shadow-2xl">
+                    <img alt="Academic Illustration" class="w-full h-auto object-cover aspect-[4/3]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsIV1f0XFmkOvX0OoNjsWIblXIroYqdKCXn0YM78bziL1TH2YFr2RXjioA-KnqZpJGWREp3GdWL8naS3ntAe1lJauZpGuyj7TVwbXJ3jXzOUgIESY3j-AIjNJmc5G7xGv8IZJgcaRoS4XoYkgQE7Adl0m2GSO8asJY7Auxk8Sq-jj1dw-1vHeGA60NWmkjrVFXPsc4sv6QAL-OPsCK8hHxGvVTbjVAZaDqWwSBd9wEfGyCXZtg-2WC-_Hq4wb0xGhkjOf2EnyRUTQ"/>
+                </div>
+                <h1 class="text-4xl font-bold leading-tight mb-4">Chinh phục kỳ thi của bạn</h1>
+                <p class="text-lg text-blue-100 max-w-md">
+                    Nền tảng thi trắc nghiệm trực tuyến đáng tin cậy nhất. Tham gia cùng hàng nghìn thí sinh đạt kết quả cao nhất.
+                </p>
+            </div>
+            <div class="flex gap-6 text-sm font-medium text-blue-100/80">
+                <a class="hover:text-white transition-colors" href="#">Chính sách bảo mật</a>
+                <a class="hover:text-white transition-colors" href="#">Điều khoản</a>
+                <a class="hover:text-white transition-colors" href="#">Trợ giúp</a>
+            </div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-black/10 rounded-full -ml-48 -mb-48 blur-3xl"></div>
+        </div>
 
-                    <!-- Register Form (hidden by default) -->
-                    <form id="registerForm" style="display: none;">
-                        <div class="mb-3">
-                            <label class="form-label">Tên đăng nhập</label>
-                            <input type="text" class="form-control" id="regUsername" placeholder="Nhập tên đăng nhập" required>
+        <!-- Right Side: Auth Form -->
+        <div class="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 lg:p-20 bg-white dark:bg-background-dark">
+            <div class="w-full max-w-[440px]">
+                <!-- Header & Toggle -->
+                <div class="mb-8">
+                    <div class="lg:hidden flex items-center gap-3 mb-8">
+                        <div class="bg-primary p-2 rounded-lg">
+                            <svg class="size-6 text-white" fill="none" viewbox="0 0 48 48">
+                                <path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill="currentColor" fill-rule="evenodd"></path>
+                            </svg>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Họ và tên</label>
-                            <input type="text" class="form-control" id="regFullName" placeholder="Nhập họ và tên">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" id="regEmail" placeholder="Nhập email">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Mật khẩu</label>
-                            <input type="password" class="form-control" id="regPassword" placeholder="Nhập mật khẩu" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
-                    </form>
-
-                    <div class="text-center mt-3">
-                        <span id="toggleText">Chưa có tài khoản? </span>
-                        <span class="toggle-link" id="toggleBtn">Đăng ký ngay</span>
+                        <h2 class="text-xl font-bold tracking-tight text-slate-900">ExamMaster</h2>
                     </div>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2" id="formTitle">Chào mừng trở lại</h2>
+                    <p class="text-slate-500 dark:text-slate-400" id="formDesc">Vui lòng nhập thông tin để đăng nhập.</p>
+                </div>
+
+                <!-- Toggle Switch -->
+                <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-8">
+                    <button class="flex-1 py-2 text-sm font-semibold rounded-lg bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white transition-all" id="btnSignIn" onclick="showLogin()">
+                        Đăng nhập
+                    </button>
+                    <button class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-all" id="btnSignUp" onclick="showRegister()">
+                        Đăng ký
+                    </button>
+                </div>
+
+                <!-- Social Logins -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <button class="flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium text-slate-700 dark:text-slate-300">
+                        <img alt="Google" class="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZv-AqpXU1BKpxPVEt0Db5gkmfu4ecZIWC9yJq1uQ7c6XKyTU6bKzJtoeuuO6ah2j-ZDEt4d3lDyOCdx-OMOVDKahAY5In-AamiNldxSfh4aYc2MCo95Bz6PmnGBDkclR16mriphuyXacEF4zob0AmRfLROCiVtCwh3h92p0GHQGqo9rIl_G8lUvHCJ5Utgu1a_YsUEU_1L05xW6vrc54fo_P-SrHq1Zcks4HhPMvwQqT9aam9EQykEkwxjfjifjmEKGiOfOw74Ps"/>
+                        Google
+                    </button>
+                    <button class="flex items-center justify-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium text-slate-700 dark:text-slate-300">
+                        <svg class="w-5 h-5 text-[#1877F2]" fill="currentColor" viewbox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path>
+                        </svg>
+                        Facebook
+                    </button>
+                </div>
+
+                <div class="relative mb-8">
+                    <div class="absolute inset-0 flex items-center">
+                        <span class="w-full border-t border-slate-200 dark:border-slate-700"></span>
+                    </div>
+                    <div class="relative flex justify-center text-xs uppercase">
+                        <span class="bg-white dark:bg-background-dark px-2 text-slate-500 dark:text-slate-400">hoặc tiếp tục với email</span>
+                    </div>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-5" onsubmit="handleLogin(event)">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="loginUsername">Tên đăng nhập</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">person</span>
+                            <input class="block w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-400" id="loginUsername" placeholder="Nhập tên đăng nhập" type="text" required/>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300" for="loginPassword">Mật khẩu</label>
+                        </div>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">lock</span>
+                            <input class="block w-full pl-10 pr-12 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-400" id="loginPassword" placeholder="Nhập mật khẩu" type="password" required/>
+                            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors" type="button" onclick="togglePassword('loginPassword')">
+                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2" type="submit">
+                        Đăng nhập
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="space-y-5 hidden" onsubmit="handleRegister(event)">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="registerUsername">Tên đăng nhập</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">person</span>
+                            <input class="block w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-400" id="registerUsername" placeholder="Nhập tên đăng nhập" type="text" required/>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="registerFullName">Họ và tên</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">badge</span>
+                            <input class="block w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-400" id="registerFullName" placeholder="Nhập họ và tên" type="text"/>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="registerEmail">Email</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">mail</span>
+                            <input class="block w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-400" id="registerEmail" placeholder="name@example.com" type="email"/>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="registerPassword">Mật khẩu</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">lock</span>
+                            <input class="block w-full pl-10 pr-12 py-2.5 bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary text-slate-900 dark:text-white placeholder:text-slate-400" id="registerPassword" placeholder="Nhập mật khẩu" type="password" required/>
+                            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors" type="button" onclick="togglePassword('registerPassword')">
+                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2" type="submit">
+                        Đăng ký
+                    </button>
+                </form>
+
+                <p class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400" id="toggleText">
+                    Chưa có tài khoản? <a class="text-primary font-bold hover:underline cursor-pointer" onclick="showRegister()">Tạo tài khoản</a>
+                </p>
+
+                <div class="mt-12 flex justify-center items-center gap-2">
+                    <div class="p-2 rounded-full bg-slate-100 dark:bg-slate-800">
+                        <span class="material-symbols-outlined text-slate-600 dark:text-slate-400 text-[18px]">support_agent</span>
+                    </div>
+                    <span class="text-sm text-slate-600 dark:text-slate-400">Cần hỗ trợ? <a class="font-medium text-slate-900 dark:text-white hover:underline" href="#">Liên hệ</a></span>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="js/api.js"></script>
-    <script src="js/auth.js"></script>
     <script>
-        // Check if already logged in
-        if (localStorage.getItem('token')) {
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (user.role === 'Admin') {
-                window.location.href = 'admin.html';
-            } else {
-                window.location.href = 'home.html';
-            }
+        // Toggle between Login and Register forms
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('formTitle').textContent = 'Chào mừng trở lại';
+            document.getElementById('formDesc').textContent = 'Vui lòng nhập thông tin để đăng nhập.';
+            document.getElementById('btnSignIn').classList.add('bg-white', 'dark:bg-slate-700', 'shadow-sm', 'text-slate-900', 'dark:text-white');
+            document.getElementById('btnSignIn').classList.remove('text-slate-500', 'dark:text-slate-400');
+            document.getElementById('btnSignUp').classList.remove('bg-white', 'dark:bg-slate-700', 'shadow-sm', 'text-slate-900', 'dark:text-white');
+            document.getElementById('btnSignUp').classList.add('text-slate-500', 'dark:text-slate-400');
+            document.getElementById('toggleText').innerHTML = 'Chưa có tài khoản? <a class="text-primary font-bold hover:underline cursor-pointer" onclick="showRegister()">Tạo tài khoản</a>';
         }
 
-        let isLogin = true;
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const formTitle = document.getElementById('formTitle');
-        const toggleBtn = document.getElementById('toggleBtn');
-        const toggleText = document.getElementById('toggleText');
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('formTitle').textContent = 'Tạo tài khoản';
+            document.getElementById('formDesc').textContent = 'Đăng ký để bắt đầu thi trắc nghiệm.';
+            document.getElementById('btnSignUp').classList.add('bg-white', 'dark:bg-slate-700', 'shadow-sm', 'text-slate-900', 'dark:text-white');
+            document.getElementById('btnSignUp').classList.remove('text-slate-500', 'dark:text-slate-400');
+            document.getElementById('btnSignIn').classList.remove('bg-white', 'dark:bg-slate-700', 'shadow-sm', 'text-slate-900', 'dark:text-white');
+            document.getElementById('btnSignIn').classList.add('text-slate-500', 'dark:text-slate-400');
+            document.getElementById('toggleText').innerHTML = 'Đã có tài khoản? <a class="text-primary font-bold hover:underline cursor-pointer" onclick="showLogin()">Đăng nhập</a>';
+        }
 
-        toggleBtn.addEventListener('click', () => {
-            isLogin = !isLogin;
-            if (isLogin) {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                formTitle.textContent = 'Đăng nhập';
-                toggleText.textContent = 'Chưa có tài khoản? ';
-                toggleBtn.textContent = 'Đăng ký ngay';
-            } else {
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-                formTitle.textContent = 'Đăng ký';
-                toggleText.textContent = 'Đã có tài khoản? ';
-                toggleBtn.textContent = 'Đăng nhập ngay';
-            }
-        });
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
 
-        // Login
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Handle Login
+        async function handleLogin(event) {
+            event.preventDefault();
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
 
             try {
-                const response = await fetch(`${BASE_URL}/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-
+                const response = await authAPI.login(username, password);
                 const data = await response.json();
-                
+
                 if (response.ok) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
@@ -150,37 +244,43 @@
                     alert(data.error || 'Đăng nhập thất bại');
                 }
             } catch (error) {
-                alert('Lỗi kết nối server');
+                alert('Lỗi kết nối. Vui lòng thử lại.');
             }
-        });
+        }
 
-        // Register
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('regUsername').value;
-            const fullName = document.getElementById('regFullName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
+        // Handle Register
+        async function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const fullName = document.getElementById('registerFullName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
 
             try {
-                const response = await fetch(`${BASE_URL}/auth/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, fullName, email, password })
-                });
-
+                const response = await authAPI.register(username, password, fullName, email);
                 const data = await response.json();
-                
+
                 if (response.ok) {
                     alert('Đăng ký thành công! Vui lòng đăng nhập.');
-                    toggleBtn.click();
+                    showLogin();
                 } else {
                     alert(data.error || 'Đăng ký thất bại');
                 }
             } catch (error) {
-                alert('Lỗi kết nối server');
+                alert('Lỗi kết nối. Vui lòng thử lại.');
             }
-        });
+        }
+
+        // Check if already logged in
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (token && user) {
+            if (user.role === 'Admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'home.html';
+            }
+        }
     </script>
 </body>
 </html>
